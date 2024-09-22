@@ -1,0 +1,22 @@
+{
+  "kind": "calendar#event",
+  "etag": "'3443471239706000'",
+  "id": "210lp3krfsvt0n0m6bldhf7kq2",
+  "status": "confirmed",
+  "htmlLink": "https://www.google.com/calendar/event?eid=MjEwbHAza3Jmc3Z0MG4wbTZibGRoZjdrcTIgemFrLmpha3ViNjdAbQ",
+  "created": "2024-07-23T11:53:39.000Z",
+  "updated": "2024-07-23T11:53:39.853Z",
+  "summary": "Kosice Maraton Mieru",
+  "creator": { "email": "zak.jakub67@gmail.com", "self": true },
+  "organizer": { "email": "zak.jakub67@gmail.com", "self": true },
+  "start": { "date": "2024-10-06" },
+  "end": { "date": "2024-10-07" },
+  "transparency": "transparent",
+  "iCalUID": "210lp3krfsvt0n0m6bldhf7kq2@google.com",
+  "sequence": 0,
+  "reminders": {
+    "useDefault": false,
+    "overrides": [{ "method": "popup", "minutes": 30 }]
+  },
+  "eventType": "default"
+}
