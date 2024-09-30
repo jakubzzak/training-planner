@@ -1,0 +1,42 @@
+{
+  "activities": [
+    {
+      "type": "run",
+      "distance_km": 8
+    },
+    {
+      "type": "run",
+      "title": "Short run",
+      "distance_km": 8
+    },
+    {
+      "type": "run",
+      "title": "Long run",
+      "distance_km": 16
+    },
+    {
+      "type": "bike",
+      "distance_km": 45
+    },
+    {
+      "type": "bike",
+      "title": "Short bike ride",
+      "distance_km": 45
+    },
+    {
+      "type": "bike",
+      "title": "Long bike ride",
+      "distance_km": 70
+    },
+    {
+      "type": "swim",
+      "distance_km": 2.5
+    },
+    {
+      "type": "swim",
+      "title": "Short swim",
+      "distance_km": 1.5
+    }
+  ],
+  "days": ["monday", "tuesday", "wednesday"]
+}

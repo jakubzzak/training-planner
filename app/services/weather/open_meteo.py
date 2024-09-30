@@ -1,9 +1,12 @@
+from pprint import pprint
+from typing import List
+
 import openmeteo_requests
 import pandas as pd
 import requests_cache
 from retry_requests import retry
 
-# from data.open_meteo_weather_codes import weather_codes
+from app.services.weather.open_meteo_weather_codes import format_weather_code
 
 
 class OpenMeteoService():
@@ -24,9 +27,10 @@ class OpenMeteoService():
 
         pd.set_option("display.max_columns", None)
         pd.set_option("display.max_rows", None)
+        print('\nOpenMeteo initiated\n')
 
 
-    def get_weather_data(self, latitude, longitude):
+    def get_weather_data(self, latitude: float, longitude: float) -> List[dict]:
         params = self.params.copy()
         params["latitude"] = latitude
         params["longitude"] = longitude
@@ -73,12 +77,12 @@ class OpenMeteoService():
         hourly_data["wind_direction_10m"] = hourly_wind_direction_10m
 
         hourly_dataframe = pd.DataFrame(data = hourly_data)
-        print(hourly_dataframe)
+        # print(hourly_dataframe)
 
         # Process daily data. The order of variables needs to be the same as requested.
         daily = response.Daily()
         daily_weather_code = daily.Variables(0).ValuesAsNumpy()
-        daily_temperature_2m_max = daily.Variables(1).ValuesAsNumpy()
+        # daily_temperature_2m_max = daily.Variables(1).Values()
         daily_temperature_2m_min = daily.Variables(2).ValuesAsNumpy()
         daily_sunrise = daily.Variables(3).ValuesAsNumpy()
         daily_sunset = daily.Variables(4).ValuesAsNumpy()
@@ -94,13 +98,13 @@ class OpenMeteoService():
         daily_wind_direction_10m_dominant = daily.Variables(14).ValuesAsNumpy()
 
         daily_data = {"date": pd.date_range(
-            start = pd.to_datetime(daily.Time(), unit = "s", utc = True),
-            end = pd.to_datetime(daily.TimeEnd(), unit = "s", utc = True),
-            freq = pd.Timedelta(seconds = daily.Interval()),
-            inclusive = "left"
+            start=pd.to_datetime(daily.Time(), unit = "s", utc = True),
+            end=pd.to_datetime(daily.TimeEnd(), unit = "s", utc = True),
+            freq=pd.Timedelta(seconds = daily.Interval()),
+            inclusive="left"
         )}
         daily_data["weather_code"] = daily_weather_code
-        daily_data["temperature_2m_max"] = daily_temperature_2m_max
+        # daily_data["temperature_2m_max"] = daily_temperature_2m_max
         daily_data["temperature_2m_min"] = daily_temperature_2m_min
         daily_data["sunrise"] = daily_sunrise
         daily_data["sunset"] = daily_sunset
@@ -116,7 +120,19 @@ class OpenMeteoService():
         daily_data["wind_direction_10m_dominant"] = daily_wind_direction_10m_dominant
 
         daily_dataframe = pd.DataFrame(data = daily_data)
-        print(daily_dataframe)
+        res = []
+        for i in range(7):
+            res.append({
+                "date": daily_data["date"][i].astimezone('Europe/Berlin').date().isoformat(),
+                "temperature_min": round(daily.Variables(2).Values(i)),
+                "temperature_max": round(daily.Variables(1).Values(i)),
+                "condition": format_weather_code(daily.Variables(0).Values(i))
+            })
+            # print(f'min: {daily.Variables(2).Values(i)}, max: {daily.Variables(1).Values(i)}')
+
+        pprint(res)
+        print()
+        return res
 
 if __name__ == "__main__":
     smolenice_coordinates = [48.506211053607856, 17.43061034187817]

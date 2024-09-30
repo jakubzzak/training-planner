@@ -1,5 +1,7 @@
 import datetime
 import os.path
+from pprint import pprint
+from typing import List
 
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
@@ -14,8 +16,9 @@ class GoogleCalendarService():
 
     def __init__(self) -> None:
         self.service = build("calendar", "v3", credentials=self.__auth())
+        print('\nCalendar initiated\n')
 
-    def list_events(self):
+    def list_events(self) -> List[dict]:
         now = datetime.datetime.utcnow().isoformat() + "Z"  # 'Z' indicates UTC time
         one_week_from_now = (datetime.date.today() + datetime.timedelta(days=7)).isoformat() + 'T00:00:00Z'
         
@@ -32,9 +35,9 @@ class GoogleCalendarService():
                 .execute()
             )
             events = events_result.get("items", [])
-            events = map(lambda x: mm(x), events)
+
             def mm(x):
-                e = {
+                return {
                     'id': x.get('id'),
                     # 'status': x.get('status'),
                     # 'created': x.get('created'),
@@ -42,17 +45,21 @@ class GoogleCalendarService():
                     'start': x.get('start').get('date', x.get('start').get('dateTime')),
                     'end': x.get('end').get('date', x.get('end').get('dateTime')),
                 }
-                return e
+
+            events = list(map(lambda x: mm(x), events))
+
 
             if not events:
                 print("No upcoming events found.")
                 return
 
             # Prints the start and name of the next 10 events
-            for event in events:
-                print(event)
+            # for event in events:
+            #     print(event)
+            pprint(events)
                 # start = event["start"].get("dateTime", event["start"].get("date"))
                 # print(start, event["summary"])
+            return events
 
         except Exception as e:
             print(f"An error occurred while listing events", e)
@@ -146,14 +153,14 @@ if __name__ == '__main__':
 
     # list events
     events = gc.list_events()
-    print('Events listed: ', events)
+    pprint(events)
 
     # crete an event
-    event = gc.create_event({
-        'title': 'Test event',
-        'description': 'This is a test event',
-        'start': '2024-10-01T10:00:00',
-        'end': '2024-10-01T11:00:00',
-    })
-    print('Event created: %s', event.get('htmlLink'))
+    # event = gc.create_event({
+    #     'title': 'Test event created by the training-planner tool',
+    #     'description': 'This is a test event',
+    #     'start': '2024-10-01T10:00:00',
+    #     'end': '2024-10-01T11:00:00',
+    # })
+    # print('Event created: %s', event.get('htmlLink'))
 

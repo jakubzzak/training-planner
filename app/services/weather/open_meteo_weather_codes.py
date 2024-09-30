@@ -28,3 +28,6 @@ weather_codes = {
   96: "Thunderstorm with slight hail",
   99: "Thunderstorm with heavy hail",
 }
+
+def format_weather_code(code):
+    return weather_codes.get(code, f"Unknown code {code}")
